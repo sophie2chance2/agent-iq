@@ -1,0 +1,307 @@
+openapi: 3.0.3
+info:
+  title: Agent Navigability Simulator API
+  version: 1.0.0
+servers:
+  - url: https://api.example.com/v1
+    description: prod
+  - url: http://localhost:8000/v1
+    description: local
+paths:
+  /session/create:
+    post:
+      operationId: createSession
+      summary: Create a browser session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSessionRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateSessionResponse"
+        "400":
+          description: invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /runs:
+    post:
+      operationId: createRun
+      summary: Start a new run
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RunRequest"
+      responses:
+        "200":
+          description: created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RunResponse"
+        "400":
+          description: invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /runs/evaluate_task:
+    post:
+      operationId: evaluateTask
+      summary: Evaluate task for a run
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EvaluationDetailsRequest"
+      responses:
+        "200":
+          description: Evaluation details for the run
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EvaluationDetailsResponse"
+        "404":
+          description: Run not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /robots/analyze:
+    post:
+      operationId: analyzeRobots
+      summary: Analyze robots.txt compliance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RobotsAnalysisRequest"
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RobotsAnalysisResponse"
+        "400":
+          description: invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  schemas:
+    RunRequest:
+      type: object
+      required:
+        - task_type
+        - url
+        - model
+      properties:
+        task_type:
+          type: string
+        prompt:
+          type: string
+          nullable: true
+        url:
+          type: string
+          format: uri
+        model:
+          type: string
+        env:
+          type: string
+        stealth:
+          type: string
+          enum: [none, basic, aggressive]
+        proxies:
+          type: object
+          additionalProperties: true
+          nullable: true
+
+    RunResponse:
+      type: object
+      required:
+        - run_id
+        - session_live_view_url
+        - session_id
+      properties:
+        run_id:
+          type: string
+        session_live_view_url:
+          type: string
+          format: uri
+        session_id:
+          type: string
+
+    EvaluationDetailsRequest:
+      type: object
+      required:
+        - task_id
+        - task_description
+        - screenshots
+      properties:
+        task_id:
+          type: string
+        task_description:
+          type: string
+        final_result_response:
+          type: string
+          nullable: true
+        action_history:
+          type: array
+          items:
+            type: string
+          nullable: true
+        thoughts:
+          type: array
+          items:
+            type: string
+          nullable: true
+        screenshots:
+          type: array
+          items:
+            type: string
+        input_image_paths:
+          type: array
+          items:
+            type: string
+          nullable: true
+
+    EvaluationDetailsResponse:
+      type: object
+      required:
+        - image_judge_record
+        - key_points
+        - input_text
+        - system_msg
+        - evaluation_details
+        - predicted_label
+      properties:
+        image_judge_record:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        key_points:
+          type: string
+        input_text:
+          type: string
+        system_msg:
+          type: string
+        evaluation_details:
+          type: object
+          additionalProperties: true
+        predicted_label:
+          type: integer
+
+    RobotsAnalysisRequest:
+      type: object
+      required:
+        - url
+      properties:
+        url:
+          type: string
+          format: uri
+
+    AIRules:
+      type: object
+      properties:
+        disallowed_agents:
+          type: array
+          items:
+            type: string
+        allowed_agents:
+          type: array
+          items:
+            type: string
+        disallowed_paths:
+          type: array
+          items:
+            type: string
+        allowed_paths:
+          type: array
+          items:
+            type: string
+        general_access:
+          type: string
+          enum: [unknown, restricted, allowed, mixed]
+
+    RobotsAnalysisResponse:
+      type: object
+      properties:
+        has_robots_txt:
+          type: boolean
+        robots_url:
+          type: string
+          nullable: true
+        robots_content:
+          type: string
+          nullable: true
+        ai_rules:
+          $ref: "#/components/schemas/AIRules"
+          nullable: true
+        llm_suggestions:
+          type: string
+          nullable: true
+        error:
+          type: string
+          nullable: true
+
+    CreateSessionRequest:
+      type: object
+      required:
+        - url
+      properties:
+        url:
+          type: string
+          format: uri
+
+    CreateSessionResponse:
+      type: object
+      required:
+        - sessionId
+        - sessionUrl
+        - debuggerFullscreenUrl
+        - debuggerUrl
+        - wsUrl
+      properties:
+        sessionId:
+          type: string
+        sessionUrl:
+          type: string
+          format: uri
+        debuggerFullscreenUrl:
+          type: string
+          format: uri
+        debuggerUrl:
+          type: string
+          format: uri
+        wsUrl:
+          type: string
+          format: uri
+
+    Error:
+      type: object
+      required:
+        - error
+        - message
+      properties:
+        error:
+          type: string
+        message:
+          type: string

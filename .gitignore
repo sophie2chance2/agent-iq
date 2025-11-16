@@ -1,0 +1,9 @@
+# Node modules
+node_modules/
+
+# Env files (ignore at all levels)
+.env
+.env.*
+**/.env
+**/.env.*
+**/.npmrc

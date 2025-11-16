@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "agent-nav-sim-api"
+version = "0.1.0"
+description = "FastAPI service for the Agent Navigability Simulator"
+authors = ["Team"]
+packages = [{ include = "app" }]
+
+[tool.poetry.dependencies]
+python = ">=3.12,<3.13"
+fastapi = "^0.115.0"
+uvicorn = "^0.30.0"
+requests = "^2.32.5"
+python-dotenv = "^1.1.1"
+openai = "^1.0.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.0"
+httpx = "^0.27.0"
+pytest-asyncio = "^0.23.0"
+
+# Removing scripts block for now,  we'll run uvicorn directly
+# [tool.poetry.scripts]
+# app = "uvicorn:run"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

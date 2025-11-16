@@ -1,0 +1,66 @@
+{
+  "name": "w210-fall25-agent-nav-sim",
+  "version": "1.0.0",
+  "description": "Capstone Project Fall '25 - Agent Navigability Simulator",
+  "keywords": [],
+  "homepage": "https://github.com/UC-Berkeley-I-School/w210-fall25-agent-nav-sim#readme",
+  "bugs": {
+    "url": "https://github.com/UC-Berkeley-I-School/w210-fall25-agent-nav-sim/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UC-Berkeley-I-School/w210-fall25-agent-nav-sim.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@browserbasehq/sdk": "latest",
+    "@browserbasehq/stagehand": "latest",
+    "@eslint/eslintrc": "latest",
+    "@opentelemetry/exporter-jaeger": "^2.1.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.205.0",
+    "@opentelemetry/exporter-zipkin": "^2.1.0",
+    "@opentelemetry/sdk-node": "^0.205.0",
+    "@radix-ui/react-checkbox": "latest",
+    "@radix-ui/react-select": "latest",
+    "@radix-ui/react-slot": "latest",
+    "@vercel/analytics": "latest",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "deepmerge": "latest",
+    "dotenv": "latest",
+    "fs": "latest",
+    "geist": "latest",
+    "lucide-react": "^0.454.0",
+    "next": "16.0.3",
+    "next-themes": "latest",
+    "path": "latest",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "tailwind-merge": "^2.5.5",
+    "tailwindcss-animate": "^1.0.7",
+    "tree-sitter": "^0.21.1",
+    "tree-sitter-typescript": "^0.23.2",
+    "ts-node": "^10.9.2",
+    "tw-animate-css": "latest",
+    "url": "latest",
+    "web-tree-sitter": "^0.25.9",
+    "zod": "3.25.67"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "@types/react": "19.2.5",
+    "@types/react-dom": "19.2.3",
+    "postcss": "^8.5",
+    "tailwindcss": "4.1.17",
+    "typescript": "^5"
+  }
+}

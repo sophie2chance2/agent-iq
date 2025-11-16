@@ -1,0 +1,260 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Navigation Tracker</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        width: 400px;
+        min-height: 500px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+        background: #f5f7fa;
+        color: #333;
+      }
+
+      .header {
+        background: #5a9a88;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .header-icon {
+        width: 32px;
+        height: 32px;
+        background: white;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+      }
+
+      .header-content h1 {
+        font-size: 18px;
+        color: white;
+        margin-bottom: 2px;
+        font-weight: 600;
+      }
+
+      .header-content .subtitle {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 400;
+      }
+
+      .content {
+        padding: 20px;
+      }
+
+      .status {
+        background: #e8f4f8;
+        padding: 12px 16px;
+        border-radius: 10px;
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 13px;
+        font-weight: 500;
+        color: #5a9a88;
+        border: 1px solid #d0e8e0;
+        transition: all 0.3s ease;
+      }
+
+      .status.active {
+        background: #5a9a88;
+        color: white;
+        border-color: #5a9a88;
+      }
+
+      .button-group {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .main-workflow {
+        margin-bottom: 20px;
+      }
+
+      .button {
+        border: none;
+        color: white;
+        padding: 14px 20px;
+        text-align: center;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        border-radius: 10px;
+        width: 100%;
+        transition: all 0.2s ease;
+        position: relative;
+      }
+
+      .button:active {
+        transform: scale(0.98);
+      }
+
+      .button-primary {
+        background: #5a9a88;
+      }
+
+      .button-primary:hover {
+        background: #4d8575;
+      }
+
+      .button-danger {
+        background: #dc3545;
+      }
+
+      .button-danger:hover {
+        background: #c82333;
+      }
+
+      .button-secondary {
+        background: white;
+        color: #5a9a88;
+        border: 1px solid #d0e8e0;
+        font-size: 13px;
+        padding: 12px 16px;
+      }
+
+      .button-secondary:hover {
+        background: #f8fafb;
+        border-color: #5a9a88;
+      }
+
+      .button:disabled {
+        background: #e9ecef;
+        color: #6c757d;
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
+
+      .button:disabled:hover {
+        background: #e9ecef;
+      }
+
+      .divider {
+        height: 1px;
+        background: #e0e6ed;
+        margin: 20px 0;
+      }
+
+      .section-title {
+        color: #6c757d;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 12px;
+      }
+
+      .url-list {
+        max-height: 250px;
+        overflow-y: auto;
+        background: white;
+        padding: 12px;
+        margin-top: 12px;
+        border-radius: 10px;
+        border: 1px solid #e0e6ed;
+      }
+
+      .url-list::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .url-list::-webkit-scrollbar-track {
+        background: #f5f7fa;
+        border-radius: 10px;
+      }
+
+      .url-list::-webkit-scrollbar-thumb {
+        background: #5a9a88;
+        border-radius: 10px;
+      }
+
+      .url-list h4 {
+        font-size: 13px;
+        color: #5a9a88;
+        margin-bottom: 10px;
+        font-weight: 600;
+      }
+
+      .url-item {
+        margin: 8px 0;
+        padding: 10px;
+        background: #f8fafb;
+        border-left: 3px solid #5a9a88;
+        border-radius: 8px;
+        font-size: 11px;
+        transition: all 0.2s ease;
+      }
+
+      .url-item:hover {
+        background: #e8f4f8;
+        transform: translateX(2px);
+      }
+
+      .url-item strong {
+        color: #5a9a88;
+      }
+
+      .url-item small {
+        display: block;
+        margin-top: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div class="header-icon">🧳</div>
+      <div class="header-content">
+        <h1>Navigation Tracker</h1>
+        <div class="subtitle">Track, Analyze & Automate</div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="status" id="status">Ready to start</div>
+
+      <div class="main-workflow">
+        <div class="section-title">Main Workflow</div>
+        <div class="button-group">
+          <button id="startBtn" class="button button-primary">
+            <span>Start Tracking</span>
+          </button>
+          <button id="stopBtn" class="button button-danger" disabled>
+            <span>Stop & Upload</span>
+          </button>
+          <button id="testFlowBtn" class="button button-primary">
+            <span>Test Workflow</span>
+          </button>
+        </div>
+      </div>
+
+      <details>
+        <summary style="cursor: pointer; color: #6c757d; font-size: 12px; font-weight: 500; padding: 8px 0; user-select: none;">
+          Advanced Options
+        </summary>
+        <div class="button-group" style="margin-top: 12px;">
+          <button id="testBtn" class="button button-secondary">
+            <span>Test Server Connection</span>
+          </button>
+          <button id="downloadScriptBtn" class="button button-secondary">
+            <span>Download Script</span>
+          </button>
+        </div>
+      </details>
+
+    </div>
+  </body>
+  <script src="popup.js"></script>
+</html>

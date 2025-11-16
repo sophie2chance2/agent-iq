@@ -1,0 +1,6 @@
+version: 1
+id: ecommerce/add_white_tshirt_to_cart.v1
+steps:
+  - visit: "https://example.com"
+  - search: "white tshirt"
+  - click: "Add to cart"

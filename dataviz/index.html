@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Navigation Metrics Dashboard</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+            text-align: center;
+        }
+
+        .axis {
+            font-size: 12px;
+        }
+
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: #333;
+            shape-rendering: crispEdges;
+        }
+
+        .grid line {
+            stroke: #e0e0e0;
+            stroke-dasharray: 3,3;
+        }
+
+        .grid path {
+            stroke-width: 0;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .bar {
+            transition: opacity 0.2s;
+        }
+
+        .bar:hover {
+            opacity: 0.8;
+        }
+
+        .line {
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .dot {
+            fill: white;
+            stroke-width: 2;
+        }
+
+        .legend {
+            font-size: 12px;
+        }
+
+        .legend-item {
+            margin-right: 20px;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            display: inline-block;
+            margin-right: 4px;
+            vertical-align: middle;
+        }
+
+        .controls {
+            text-align: center;
+            margin-bottom: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .model-filter-wrapper {
+            display: inline-block;
+            position: relative;
+            margin: 0 10px;
+        }
+
+        .controls select {
+            padding: 8px 30px 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: white;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            cursor: pointer;
+            font-size: 14px;
+            min-width: 150px;
+        }
+
+        .controls select:focus {
+            outline: none;
+            border-color: #2196F3;
+        }
+
+        /* Add the same dropdown arrow as search filter */
+        .model-filter-wrapper::after {
+            content: "▼";
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .search-filter-container {
+            display: inline-block;
+            position: relative;
+            margin: 0 10px;
+        }
+
+        .search-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            min-width: 200px;
+            max-width: 300px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .search-dropdown.show {
+            display: block;
+        }
+
+        .search-option {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+
+        .search-option:hover {
+            background-color: #f5f5f5;
+        }
+
+        .search-option input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        .apply-all-button {
+            display: block;
+            width: calc(100% - 16px);
+            margin: 4px 8px;
+            padding: 6px 12px;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .apply-all-button:hover {
+            background: #1976D2;
+        }
+
+        .filter-actions {
+            border-top: 1px solid #eee;
+            padding: 0;
+            background: #f9f9f9;
+        }
+
+        .search-toggle-btn {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            min-width: 150px;
+            text-align: left;
+        }
+
+        .search-toggle-btn:hover {
+            background-color: #f5f5f5;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            margin-right: 8px;
+            color: #333;
+        }
+
+        .summary-stats {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            grid-column: 1 / -1;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center; margin-bottom: 30px; color: #333;">Agent Navigation Metrics Dashboard</h1>
+    
+    <div class="controls">
+        <label class="filter-label" for="modelFilter">Compare Models:</label>
+        <div class="model-filter-wrapper">
+            <select id="modelFilter">
+                <option value="all">All Models</option>
+            </select>
+        </div>
+        
+        <label class="filter-label">Filter Search Terms:</label>
+        <div class="search-filter-container" id="searchFilterDropdown">
+            <button class="search-toggle-btn" id="searchFilterButton">
+                <span id="searchFilterText">All Search Terms</span> ▼
+            </button>
+            <div class="search-dropdown" id="searchFilterOptions">
+                <!-- Options will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard">
+        <div class="chart-container summary-stats">
+            <div class="chart-title">Summary Statistics</div>
+            <div class="stats-grid" id="summaryStats"></div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-title">Execution Time per Run by Model</div>
+            <svg id="executionTimeChart"></svg>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-title">Total Tokens per Run by Model</div>
+            <svg id="tokensPerRunChart"></svg>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-title">Success Rate by Model</div>
+            <svg id="successRateChart"></svg>
+        </div>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+
+    <script src="dashboard_simple.js?v=7"></script>
+</body>
+</html>
