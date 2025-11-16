@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
-import { defineEnvironment } from '../../../../agents/define-agent';
-import { customScriptWorkflow } from '../../../../agents/workflows/custom-script';
+import { defineEnvironment } from '@/agents/define-agent';
+import { customScriptWorkflow } from '@/agents/workflows/custom-script';
 
 export async function POST(request: NextRequest) {
   try {

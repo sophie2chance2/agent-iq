@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
-import { defineEnvironment } from '../../../../agents/define-agent';
-import { findFlightWorkflow } from '../../../../agents/workflows/find-flight';
+import { defineEnvironment } from '@/agents/define-agent';
+import { findFlightWorkflow } from '@/agents/workflows/find-flight';
 
 export async function POST(request: NextRequest) {
   try {

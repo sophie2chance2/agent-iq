@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
-import { defineEnvironment } from '../../../../agents/define-agent';
-import { addToCartWorkflow } from '../../../../agents/workflows/add-to-cart';
+import { defineEnvironment } from '@/agents/define-agent';
+import { addToCartWorkflow } from '@/agents/workflows/add-to-cart';
 
 export async function POST(request: NextRequest) {
   try {
